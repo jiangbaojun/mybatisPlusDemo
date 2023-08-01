@@ -3,6 +3,7 @@ package com.example.demo.common;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import com.baomidou.mybatisplus.generator.config.po.LikeTable;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import freemarker.template.Configuration;
@@ -47,8 +48,10 @@ public class GeneratorPlus {
     }
 
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/db1?allowMultiQueries=true&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8",
-                        "root", "12345678")
+//        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/db1?allowMultiQueries=true&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8",
+//                        "root", "12345678")
+        FastAutoGenerator.create("jdbc:mysql://dev-03.cluster-c9qe4y0vrvda.rds.cn-northwest-1.amazonaws.com.cn:3306/eclinical_admin?allowMultiQueries=true&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8",
+                        "root", "8YTJWOuA7XRK17wRQnw4")
                 .globalConfig(builder -> {
                     builder.author("jiangbaojun") // 设置作者
                             .dateType(DateType.ONLY_DATE)
@@ -68,13 +71,11 @@ public class GeneratorPlus {
                     builder.xml("mapper.xml");
                     //builder.service("service模板文件路径");
                 })
-                .strategyConfig(builder -> {
-                    builder
-//                            .addInclude("user") // 设置需要生成的表名
-//                            .addTablePrefix("t_", "c_") // 设置过滤表前缀
-                            .entityBuilder().fileOverride().enableLombok().enableTableFieldAnnotation().idType(IdType.AUTO)
-                            .mapperBuilder().fileOverride().enableBaseResultMap().enableBaseColumnList();
-                })
+                .strategyConfig(builder -> builder
+//                        .addInclude("eclinical_admin_limitation") // 设置需要生成的表名
+                        .likeTable(new LikeTable("eclinical_admin_limitation%")) // 设置过滤表前缀
+                        .entityBuilder().fileOverride().enableLombok().enableTableFieldAnnotation().idType(IdType.AUTO)
+                        .mapperBuilder().fileOverride().enableBaseResultMap().enableBaseColumnList())
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
                 .injectionConfig(builder -> {
                     //除了标准的xml、mapper、service等文件生成。此处指定的是自定义的模板，产生的文件
