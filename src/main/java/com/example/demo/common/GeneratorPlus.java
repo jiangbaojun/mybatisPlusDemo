@@ -69,6 +69,7 @@ public class GeneratorPlus {
                 .templateConfig(builder -> {
                     //指定xml、service、controller等模板文件。模板load根路径是/，所以此处要写相对resources文件夹的路径
                     builder.xml("mapper.xml");
+                    builder.entity("entity.java");
                     //builder.service("service模板文件路径");
                 })
                 .strategyConfig(builder -> builder

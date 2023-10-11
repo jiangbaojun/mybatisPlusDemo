@@ -36,4 +36,61 @@
     </sql>
 
 </#if>
+
+<insert id="saveFull">
+    <#list table.fields as field>
+        <#if field.keyFlag>
+    <selectKey keyProperty="${field.propertyName}" order="AFTER" resultType="${field.propertyType}">
+        SELECT LAST_INSERT_ID()
+    </selectKey>
+        </#if>
+    </#list>
+    insert into ${table.name} (<#list table.fields as field><#if !field.keyFlag>${field.columnName}<#if field_has_next>,</#if></#if></#list>)
+    values(
+    <#list table.fields as field>
+        <#if !field.keyFlag>
+        <#noparse>#</#noparse>{${field.propertyName},jdbcType=${field.metaInfo.jdbcType}}<#if field_has_next>,</#if>
+        </#if>
+    </#list>
+    )
+</insert>
+
+<insert id="save">
+    <#list table.fields as field>
+        <#if field.keyFlag>
+    <selectKey keyProperty="${field.propertyName}" order="AFTER" resultType="${field.propertyType}">
+        SELECT LAST_INSERT_ID()
+    </selectKey>
+        </#if>
+    </#list>
+    insert into ${table.name}
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+    <#list table.fields as field>
+    <#if !field.keyFlag>
+        <if test="${field.propertyName} != null">${field.columnName},</if>
+    </#if>
+    </#list>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+    <#list table.fields as field>
+    <#if !field.keyFlag>
+        <if test="${field.propertyName} != null"><#noparse>#</#noparse>{${field.propertyName},jdbcType=${field.metaInfo.jdbcType}},</if>
+    </#if>
+    </#list>
+    </trim>
+</insert>
+
+<update id="updateByPrimaryKey" parameterType="${package.Entity}.${entity}">
+    update ${table.name}
+    <set>
+<#list table.fields as field>
+    <#if !field.keyFlag>
+        <if test="${field.propertyName} != null">
+            ${field.columnName} = <#noparse>#</#noparse>{${field.propertyName},jdbcType=${field.metaInfo.jdbcType}},
+        </if>
+    </#if>
+</#list>
+    </set>
+    where <#list table.fields as field><#if field.keyFlag>${field.columnName} = <#noparse>#</#noparse>{${field.propertyName},jdbcType=${field.metaInfo.jdbcType}}</#if></#list>
+</update>
 </mapper>
