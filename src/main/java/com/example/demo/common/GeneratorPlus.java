@@ -50,7 +50,7 @@ public class GeneratorPlus {
     public static void main(String[] args) {
 //        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/db1?allowMultiQueries=true&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8",
 //                        "root", "12345678")
-        FastAutoGenerator.create("jdbc:mysql://dev-03.cluster-c9qe4y0vrvda.rds.cn-northwest-1.amazonaws.com.cn:3306/eclinical_admin?allowMultiQueries=true&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8",
+        FastAutoGenerator.create("jdbc:mysql://dev-03.cluster-c9qe4y0vrvda.rds.cn-northwest-1.amazonaws.com.cn:3306/eclinical_admin_log?allowMultiQueries=true&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8",
                         "root", "8YTJWOuA7XRK17wRQnw4")
                 .globalConfig(builder -> {
                     builder.author("jiangbaojun") // 设置作者
@@ -62,19 +62,22 @@ public class GeneratorPlus {
                     outputFileMap.put(OutputFile.xml, "C:\\Users\\BaojunJiang\\Desktop\\123");
                     //OutputFile.other自定义模板输出路径
                     outputFileMap.put(OutputFile.other, "C:\\Users\\BaojunJiang\\Desktop\\123\\others");
-                    builder.parent("com.test") // 设置父包名
-                            .moduleName("system") // 设置父包模块名
+                    builder.parent("com.edetek.eclinical")
+                            .moduleName("log")
+                            .entity("model")
+                            .mapper("mapper")
                             .pathInfo(outputFileMap);
                 })
                 .templateConfig(builder -> {
                     //指定xml、service、controller等模板文件。模板load根路径是/，所以此处要写相对resources文件夹的路径
                     builder.xml("mapper.xml");
                     builder.entity("entity.java");
+                    builder.mapper("mapper.java");
                     //builder.service("service模板文件路径");
                 })
                 .strategyConfig(builder -> builder
 //                        .addInclude("eclinical_admin_limitation") // 设置需要生成的表名
-                        .likeTable(new LikeTable("eclinical_admin_limitation%")) // 设置过滤表前缀
+                        .likeTable(new LikeTable("eclinical_admin_user_log_%")) // 设置过滤表前缀
                         .entityBuilder().fileOverride().enableLombok().enableTableFieldAnnotation().idType(IdType.AUTO)
                         .mapperBuilder().fileOverride().enableBaseResultMap().enableBaseColumnList())
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

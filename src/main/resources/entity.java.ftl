@@ -1,7 +1,9 @@
 package ${package.Entity};
 
 <#list table.importPackages as pkg>
+<#if !"${pkg}"?contains("baomidou")>
 import ${pkg};
+</#if>
 </#list>
 <#if swagger>
 import io.swagger.annotations.ApiModel;
@@ -16,10 +18,7 @@ import lombok.experimental.Accessors;
 </#if>
 
 /**
- * <p>
  * ${table.comment!}
- * </p>
- *
  * @author ${author}
  * @since ${date}
  */
