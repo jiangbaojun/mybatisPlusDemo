@@ -1,6 +1,5 @@
 package com.example.demo.common;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.po.LikeTable;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,10 +46,10 @@ public class GeneratorPlus {
     }
 
     public static void main(String[] args) {
-//        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/db1?allowMultiQueries=true&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8",
-//                        "root", "12345678")
-        FastAutoGenerator.create("jdbc:mysql://dev-03.cluster-c9qe4y0vrvda.rds.cn-northwest-1.amazonaws.com.cn:3306/eclinical_admin_log?allowMultiQueries=true&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8",
+        FastAutoGenerator.create("jdbc:mysql://161.189.141.253:8099/eclinical_global_data?allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&allowMultiQueries=true&serverTimeZone=UTC",
                         "root", "8YTJWOuA7XRK17wRQnw4")
+//        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3306/eclinical_admin_industry?allowMultiQueries=true&rewriteBatchedStatements=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8",
+//                        "root", "12345678")
                 .globalConfig(builder -> {
                     builder.author("jiangbaojun") // 设置作者
                             .dateType(DateType.ONLY_DATE)
@@ -62,31 +60,40 @@ public class GeneratorPlus {
                     outputFileMap.put(OutputFile.xml, "C:\\Users\\BaojunJiang\\Desktop\\123");
                     //OutputFile.other自定义模板输出路径
                     outputFileMap.put(OutputFile.other, "C:\\Users\\BaojunJiang\\Desktop\\123\\others");
-                    builder.parent("com.edetek.eclinical")
-                            .moduleName("log")
-                            .entity("model")
-                            .mapper("mapper")
+                    String subModule = "crf";
+                    builder.parent("com.edetek.eclinical.cmd")
+//                            .moduleName("globaldata")
+                            .entity("common.model."+subModule)
+                            .mapper("common.mapper."+subModule)
+                            .service("common.service."+subModule)
+                            .serviceImpl("common.service."+subModule+".impl")
+                            .controller("web.api.controller.common."+subModule)
                             .pathInfo(outputFileMap);
                 })
                 .templateConfig(builder -> {
                     //指定xml、service、controller等模板文件。模板load根路径是/，所以此处要写相对resources文件夹的路径
-                    builder.xml("mapper.xml");
-                    builder.entity("entity.java");
-                    builder.mapper("mapper.java");
-                    //builder.service("service模板文件路径");
+                    builder.xml("ftl/mapper.xml");
+                    builder.entity("ftl/entity.java");
+                    builder.mapper("ftl/mapper.java");
+                    builder.service("ftl/service.java");
+                    builder.serviceImpl("ftl/serviceImpl.java");
+                    builder.controller("ftl/controller.java");
                 })
-                .strategyConfig(builder -> builder
-//                        .addInclude("eclinical_admin_limitation") // 设置需要生成的表名
-                        .likeTable(new LikeTable("eclinical_admin_user_log_%")) // 设置过滤表前缀
-                        .entityBuilder().fileOverride().enableLombok().enableTableFieldAnnotation().idType(IdType.AUTO)
-                        .mapperBuilder().fileOverride().enableBaseResultMap().enableBaseColumnList())
+                .strategyConfig(builder -> {
+//                    builder.addInclude("eclinical_admin_limitation"); // 设置需要生成的表名
+                    builder.likeTable(new LikeTable("eclinical_crf%")) // 设置过滤表前缀
+                            .entityBuilder().fileOverride().enableLombok().enableTableFieldAnnotation()
+//                            .idType(IdType.AUTO)
+                            .mapperBuilder().fileOverride().enableBaseResultMap().enableBaseColumnList();
+                    builder.addTablePrefix("eclinical_");
+                })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
-                .injectionConfig(builder -> {
-                    //除了标准的xml、mapper、service等文件生成。此处指定的是自定义的模板，产生的文件
-                    builder.customMap(Collections.singletonMap("aa","aa_param"))
-                            .customFile(Collections.singletonMap("test1.xml", "/test.xml.ftl"))
-                            .build();
-                })
+//                .injectionConfig(builder -> {
+//                    //除了标准的xml、mapper、service等文件生成。此处指定的是自定义的模板，产生的文件
+//                    builder.customMap(Collections.singletonMap("aa","aa_param"))
+//                            .customFile(Collections.singletonMap("test1.xml", "/test.xml.ftl"))
+//                            .build();
+//                })
                 .execute();
     }
 }
