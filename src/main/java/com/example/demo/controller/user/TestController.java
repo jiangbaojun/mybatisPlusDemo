@@ -57,15 +57,15 @@ public class TestController {
     @RequestMapping("/t4")
     public List t4(HttpServletRequest request){
         LambdaQueryWrapper<User> qw = new LambdaQueryWrapper<>();
-        qw.and(q -> q.ge(User::getAge, 121).le(User::getAge, 124))
-                .or().lt(User::getBirthday, new Date())
-                .and(q -> q.like(User::getName, "xiaoming"));
+//        qw.and(q -> q.ge(User::getAge, 121).le(User::getAge, 124))
+//                .or().lt(User::getBirthday, new Date())
+//                .and(q -> q.like(User::getName, "xiaoming"));
         //注意在sql中，and优先级高于or
         //((age >= ? AND age <= ?) OR birthday < ? AND (name LIKE ?))
 
-//        qw.and((q)->q.ge(User::getAge, 121).le(User::getAge, 124))
-//                .or((q)->q.lt(User::getBirthday, new Date()).eq(User::getName, "100"))
-//                .and((q) -> q.like(User::getName, "xiaoming").or().like(User::getName, "小明"));
+        qw.and((q)->q.ge(User::getAge, 121).le(User::getAge, 124))
+                .or((q)->q.lt(User::getBirthday, new Date()).eq(User::getName, "100"))
+                .and((q) -> q.like(User::getName, "xiaoming").or().like(User::getName, "小明"));
 //        //((age >= ? AND age <= ?) OR (birthday < ? AND name = ?) AND (name LIKE ? OR name LIKE ?))
 
         System.out.println(qw.getSqlSegment());
@@ -85,6 +85,8 @@ public class TestController {
 
         LambdaUpdateWrapper<User> uw = new LambdaUpdateWrapper<>();
         uw.eq(User::getAge,"126");
+        //支持设置空值
+        uw.set(User::getAdress, null);
         //uw是where条件，按照user修改数据，但不会修改主键的值
         return testMapper.update(user, uw);
     }
